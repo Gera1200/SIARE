@@ -1,0 +1,184 @@
+/* Estilos generales */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+/* Barra de navegación */
+.navbar {
+    display: flex;
+    background-color: #f3d1e6; /* Color rosa claro como en la imagen */
+    width: 100%;
+    border-bottom: 1px solid #999;
+}
+
+.logo {
+    width: 160px;
+    height: 100px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-right: 1px solid #999;
+}
+
+.logo-text {
+    text-align: center;
+}
+
+.logo-main {
+    font-size: 24px;
+    font-weight: bold;
+    color: #000;
+}
+
+.logo-sub {
+    font-size: 16px;
+    color: #333;
+}
+
+.nav-menu {
+    list-style: none;
+    display: flex;
+    flex: 1;
+}
+
+.nav-item {
+    flex: 1;
+    border-right: 1px solid #999;
+}
+
+.nav-item:last-child {
+    border-right: none;
+}
+
+.nav-item a {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    color: #000;
+    height: 100px;
+    padding: 10px;
+    text-align: center;
+}
+
+.nav-icon {
+    height: 50px;
+    margin-bottom: 5px;
+}
+
+.placeholder-icon {
+    width: 50px;
+    height: 50px;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    fill: none;
+}
+
+.nav-text {
+    font-size: 14px;
+    font-weight: bold;
+}
+
+/* Contenido principal */
+.content {
+    flex: 1;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.welcome-container {
+    text-align: center;
+}
+
+.welcome-title {
+    font-size: 75px;
+    margin-bottom: 20px;
+}
+
+.agent-level, .agent-name {
+    font-size: 100px;
+    margin-bottom: 15px;
+}
+
+/* Footer */
+footer {
+    background-color: #f3d1e6; /* Mismo color que la barra de navegación */
+    padding: 10px;
+    text-align: center;
+    border-top: 1px solid #999;
+    height: 70px;
+}
+
+.copyright {
+    padding-top: 10px;
+    font-size: 25px;               /* Tamaño de letra */
+    color: black;                   /* Color de texto */
+    font-style: italic;            /* Estilo opcional */
+    font-weight: normal;           /* Peso de la fuente */
+    letter-spacing: 1px;           /* Espaciado entre letras */
+}
+
+/* Estilos responsivos */
+@media (max-width: 768px) {
+    .navbar {
+        flex-direction: column;
+    }
+    
+    .logo {
+        width: 100%;
+        border-right: none;
+        border-bottom: 1px solid #999;
+    }
+    
+    .nav-menu {
+        flex-wrap: wrap;
+    }
+    
+    .nav-item {
+        width: 50%;
+        flex: none;
+        border-bottom: 1px solid #999;
+    }
+    
+    .nav-item:nth-child(odd) {
+        border-right: 1px solid #999;
+    }
+    
+    .nav-item:nth-child(3), .nav-item:nth-child(4) {
+        border-bottom: none;
+    }
+}
+
+@media (max-width: 480px) {
+    .nav-item {
+        width: 100%;
+        border-right: none !important;
+    }
+    
+    .nav-item:nth-child(3) {
+        border-bottom: 1px solid #999;
+    }
+    
+    .welcome-title {
+        font-size: 28px;
+    }
+    
+    .agent-level, .agent-name {
+        font-size: 20px;
+    }
+}

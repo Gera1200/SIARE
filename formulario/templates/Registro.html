@@ -1,0 +1,131 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SIARE JURIDICO - Registro</title>
+    
+    <link rel="stylesheet" href="{% static 'styles.css' %}">
+</head>
+
+<body>
+    {% if messages %}
+    <ul class="messages">
+        {% for message in messages %}
+            <li class="{% if message.tags %}{{ message.tags }}{% endif %}">
+                {{ message }}
+            </li>
+        {% endfor %}
+    </ul>
+{% endif %}
+
+    <div class="login-container">
+        <div class="login-form">
+            <div class="logo">
+                <h1>SIARE <span>JURIDICO</span></h1>
+                <p class="subtitle">Centro de Atención para el Bienestar<br>Sistema Integral de Asistencias, Registros y Estadísticas</p>
+            </div>
+            
+            <form method="post" action="{% url 'Registro' %}">
+                {% csrf_token %}
+                
+                <!-- Nombre Completo -->
+                <div class="form-group">
+                    <label for="username">Nombre completo (N.A)*:</label>
+                    <input type="text" id="username" name="Nombre_Completo" required>
+                </div>
+
+                <!-- Seudónimo -->
+                <div class="form-group">
+                    <label for="nombre">Seudónimo*:</label>
+                    <input type="text" id="nombre" name="Seudonimo" required>
+                </div>
+                
+                <!-- ID único -->
+                <div class="form-group">
+                    <label for="Id_Unico">ID único*:</label>
+                    <input type="text" id="Id_Unico" name="Id_Unico" required>
+                </div>
+
+                <!-- Contraseña -->
+                <div class="form-group">
+                    <label for="password">Contraseña*:</label>
+                    <div class="password-container">
+                        <input type="password" id="password" name="Contraseña" required>
+                        <span class="toggle-password">
+                            <img src="{% static 'images/eye.svg' %}" alt="Mostrar contraseña" class="eye-icon">
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Turno Asignado -->
+                <div class="form-group">
+                    <label for="turno">Turno asignado*:</label>
+                    <select id="turno" name="id_turno" required>
+                        <option value="" disabled selected>Selecciona un turno</option>
+                        {% for turno in turnos %}
+                        <option value="{{ turno.id_turno }}">{{ turno.Tipo }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <!-- Posición fija ATDT -->
+                <div class="form-group">
+                    <label for="telefono">Posición fija ATDT*:</label>
+                    <input type="number" id="telefono" name="Posicion_fija" min="1" required>
+                </div>
+
+                <!-- Correo asignado -->
+                <div class="form-group">
+                    <label for="departamento">Correo asignado:</label>
+                    <input type="email" id="departamento" name="Correo">
+                </div>
+
+                <!-- Nivel propuesto -->
+                <div class="form-group">
+                    <label for="cargo">Nivel propuesto*:</label>
+                    <select id="cargo" name="id_nivel" required>
+                        <option value="" disabled selected>Selecciona un nivel</option>
+                        {% for nivel in niveles %}
+                        <option value="{{ nivel.id_nivel }}">{{ nivel.descrp_nivel }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <!-- Rol Asignado -->
+                <div class="form-group">
+                    <label for="rol">Rol*:</label>
+                    <select id="rol" name="id_rol" required>
+                        <option value="" disabled selected>Selecciona un Rol</option>
+                        {% for rol in roles %}
+                        <option value="{{ rol.id_rol }}">{{ rol.descrp_rol }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <!-- Contraseña para Directivo (solo visible si es Directivo) -->
+                <div class="form-group" id="contraseña2-group" style="display: none;">
+                    <label for="contraseña2">Contraseña Directivo*:</label>
+                    <input type="password" id="contraseña2" name="contraseña2">
+                </div>
+
+                <!-- Botón de envío -->
+                <button type="submit" class="login-button">GUARDAR</button>
+                
+                <div class="register-link">
+                    <a href="{% url 'login' %}">Página de inicio</a>
+                </div>
+                
+                <p class="required-fields">*Datos obligatorios</p>
+            </form>
+
+            <div class="copyright">
+                Copyright © 2025
+            </div>
+        </div>
+    </div>
+
+    <script src="{% static 'js/password.js' %}"></script>
+</body>
+</html>

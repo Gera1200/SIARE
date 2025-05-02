@@ -1,0 +1,66 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SIARE JURIDICO - Login</title>
+    
+    <link rel="stylesheet" href="{% static 'styles.css' %}">
+</head>
+
+<body>
+    {% if messages %}
+    <ul class="messages">
+        {% for message in messages %}
+            <li class="{% if message.tags %}{{ message.tags }}{% endif %}">
+                {{ message }}
+            </li>
+        {% endfor %}
+    </ul>
+{% endif %}
+    <div class="login-container">
+        <div class="login-form">
+            <div class="logo">
+                <h1>SIARE <span>JURIDICO</span></h1>
+                <p class="subtitle">Centro de Atención para el Bienestar<br>Sistema Integral de Asistencias, Registros y Estadísticas</p>
+            </div>
+            
+            <p class="manual-link">Manual de Usuario</p>
+            
+            <form method="post" action="{% url 'login' %}">
+                {% csrf_token %}
+                
+                <div class="form-group">
+                    <label for="username">Usuario*:</label>
+                    <input type="text" id="username" name="username" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="password">Contraseña*:</label>
+                    <div class="password-container">
+                        <input type="password" id="password" name="password" required>
+                        <span class="toggle-password">
+                            <img src="{% static 'images/eye.svg' %}" alt="Mostrar contraseña" class="eye-icon">
+
+                        </span>
+                    </div>
+                </div>
+                
+                <button type="submit" class="login-button">INGRESAR</button>
+                
+                <div class="register-link">
+                    <a href="{% url 'Registro' %}">Registrarse</a>
+                </div>
+                
+                <p class="required-fields">*Datos obligatorios</p>
+            </form>
+            
+            <div class="copyright">
+                Copyright © 2025
+            </div>
+        </div>
+    </div>
+    <script src="{% static 'js/password.js' %}"></script>
+</body>
+</html>

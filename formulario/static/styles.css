@@ -1,0 +1,255 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
+
+body {
+    background-image: url("images/fondo.jpeg");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-color: #f5f5f5;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+
+.login-container {
+    width: 100%;
+    max-width: 450px;
+    padding: 20px;
+}
+
+.login-form {
+    background-color: white;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    padding: 30px;
+    position: relative;
+}
+
+.logo {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.logo img {
+    height: 50px;
+    margin-bottom: 10px;
+}
+
+.logo h1 {
+    font-size: 24px;
+    font-weight: bold;
+    letter-spacing: 1px;
+}
+
+.logo span {
+    font-weight: normal;
+}
+
+.subtitle {
+    font-size: 12px;
+    color: #666;
+    text-align: center;
+    line-height: 1.4;
+    margin-top: 5px;
+}
+
+.manual-link {
+    color: #0099ff;
+    text-align: center;
+    font-size: 14px;
+    margin-bottom: 20px;
+    cursor: pointer;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+label {
+    display: block;
+    font-size: 14px;
+    margin-bottom: 5px;
+}
+
+input, select {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 3px;
+    font-size: 14px;
+    background-color: white;
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+}
+
+select {
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    background-size: 15px;
+    padding-right: 30px;
+    cursor: pointer;
+}
+
+select:focus, input:focus {
+    outline: none;
+    border-color: #F2CFEE;
+    box-shadow: 0 0 0 2px rgba(242, 207, 238, 0.3);
+}
+
+.password-container {
+    position: relative;
+}
+
+.toggle-password {
+    position: absolute;
+    top: 50%;
+    right: 10px;
+    transform: translateY(-50%);
+    cursor: pointer;
+    display: none;
+}
+
+.password-container input:focus + .toggle-password {
+    display: block;
+}
+
+.eye-icon {
+    width: 20px;
+    height: 20px;
+    object-fit: contain;
+}
+
+.login-button {
+    width: 100%;
+    padding: 10px;
+    background-color: #F2CFEE;
+    color: #333;
+    border: none;
+    border-radius: 3px;
+    font-size: 14px;
+    cursor: pointer;
+    margin-bottom: 15px;
+    transition: background-color 0.3s;
+}
+
+.login-button:hover {
+    background-color: #f5c0f5;
+}
+
+.register-link {
+    text-align: center;
+    margin-bottom: 15px;
+}
+
+.register-link a {
+    color: #0099ff;
+    text-decoration: none;
+    font-size: 14px;
+}
+
+.required-fields {
+    font-size: 12px;
+    color: #666;
+    margin-bottom: 20px;
+}
+
+.copyright {
+    text-align: right;
+    font-size: 12px;
+    color: #999;
+    position: absolute;
+    bottom: 10px;
+    right: 15px;
+}
+/* Estilos para los mensajes */
+.messages {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 1000;
+    list-style: none;
+    width: 100%;
+    max-width: 350px;
+}
+
+.messages li {
+    padding: 15px;
+    margin-bottom: 10px;
+    border-radius: 4px;
+    font-size: 14px;
+    color: white;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    display: flex;
+    align-items: center;
+    animation: slideIn 0.3s ease-out forwards;
+    opacity: 0;
+    transform: translateX(100%);
+}
+
+/* Animación para los mensajes */
+@keyframes slideIn {
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+/* Estilo para mensajes de éxito */
+.success {
+    background-color: #4CAF50;
+    border-left: 5px solid #388E3C;
+}
+
+/* Estilo para mensajes de error */
+.error {
+    background-color: #F44336;
+    border-left: 5px solid #D32F2F;
+}
+
+/* Estilo para mensajes de advertencia */
+.warning {
+    background-color: #FFC107;
+    border-left: 5px solid #FFA000;
+    color: #333;
+}
+
+/* Estilo para mensajes de información */
+.info {
+    background-color: #2196F3;
+    border-left: 5px solid #1976D2;
+}
+
+/* Iconos para los mensajes (opcional) */
+.messages li::before {
+    content: '';
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    margin-right: 10px;
+    background-size: contain;
+    background-repeat: no-repeat;
+}
+
+.success::before {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='white'%3E%3Cpath d='M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z'/%3E%3C/svg%3E");
+}
+
+.error::before {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='white'%3E%3Cpath d='M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z'/%3E%3C/svg%3E");
+}
+
+.warning::before {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23333'%3E%3Cpath d='M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z'/%3E%3C/svg%3E");
+}
+
+.info::before {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='white'%3E%3Cpath d='M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z'/%3E%3C/svg%3E");
+}
