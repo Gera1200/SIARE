@@ -20,6 +20,7 @@ from formulario import views as formulario_views
 from perfil import views as perfil_views
 
 urlpatterns = [
+    path('', formulario_views.login_view, name='inicio'),
     path('login/', formulario_views.login_view, name='login'),
     path('Registro/', formulario_views.register_view, name="Registro"),
     path('perfil/', perfil_views.home_pag, name='perfil'),

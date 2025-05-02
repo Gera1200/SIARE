@@ -1,16 +1,17 @@
 from django.shortcuts import render
 from django.contrib.auth import logout
 from django.shortcuts import redirect
+from django.contrib.auth.decorators import login_required
 
 # Create your views here.
 
+@login_required(login_url="login")
 def home_pag(request):
-    
     return render(request, "inicio.html")
-
 
 def agent(request):
     return render(request, 'agente.html')
+
 
 def supervise(request):
     return render(request, 'supervisor.html')
