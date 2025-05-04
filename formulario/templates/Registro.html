@@ -59,8 +59,40 @@
                     </div>
                 </div>
 
+                  <!-- Rol Asignado -->
+                  <div class="form-group">
+                    <label for="rol">Rol*:</label>
+                    <select id="rol" name="id_rol" required>
+                        <option value="" disabled selected>Selecciona un Rol</option>
+                        {% for rol in roles %}
+                        <option value="{{ rol.id_rol }}">{{ rol.descrp_rol }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                
+                  <!-- Check box (solo visible si es agente) -->
+                  <div class="form-group" id="grupo-horario-especial" style="display: none;">
+                    <label>
+                        ¿El agente tiene horario especial?
+                        <input type="checkbox" id="horario-especial" name="horario_especial">
+                        
+                    </label>
+                </div>
+
+                   <!-- Hora inicio (solo visible si es Agente) -->
+                   <div class="form-group" id="group-hora-inicio" style="display: none;">
+                    <label for="hora-inicio">Hora inicio:</label>
+                    <input type="time" id="hora-inicio" name="hora-inicio">
+                </div>
+                
+                <!-- Hora fin (solo visible si es Agente) -->
+                <div class="form-group" id="group-hora-fin" style="display: none;">
+                    <label for="hora-fin">Hora final:</label>
+                    <input type="time" id="hora-fin" name="hora-fin">
+                </div>
+
                 <!-- Turno Asignado -->
-                <div class="form-group">
+                <div class="form-group" id="group-turn">
                     <label for="turno">Turno asignado*:</label>
                     <select id="turno" name="id_turno" required>
                         <option value="" disabled selected>Selecciona un turno</option>
@@ -92,23 +124,14 @@
                         {% endfor %}
                     </select>
                 </div>
-
-                <!-- Rol Asignado -->
-                <div class="form-group">
-                    <label for="rol">Rol*:</label>
-                    <select id="rol" name="id_rol" required>
-                        <option value="" disabled selected>Selecciona un Rol</option>
-                        {% for rol in roles %}
-                        <option value="{{ rol.id_rol }}">{{ rol.descrp_rol }}</option>
-                        {% endfor %}
-                    </select>
-                </div>
-
+                
                 <!-- Contraseña para Directivo (solo visible si es Directivo) -->
                 <div class="form-group" id="contraseña2-group" style="display: none;">
                     <label for="contraseña2">Contraseña Directivo*:</label>
                     <input type="password" id="contraseña2" name="contraseña2">
                 </div>
+
+                
 
                 <!-- Botón de envío -->
                 <button type="submit" class="login-button">GUARDAR</button>

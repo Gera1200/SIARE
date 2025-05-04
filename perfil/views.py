@@ -9,6 +9,8 @@ from django.contrib.auth.decorators import login_required
 def home_pag(request):
     return render(request, "inicio.html")
 
+
+
 def agent(request):
     return render(request, 'agente.html')
 
