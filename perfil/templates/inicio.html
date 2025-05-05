@@ -28,15 +28,21 @@
                 </a>
             </li>
             <li class="nav-item">
-                <a href="#">
-                    <div class="nav-icon">
-                        <svg class="placeholder-icon" viewBox="0 0 24 24">
-                            <circle cx="12" cy="12" r="10"></circle>
-                            <polyline points="12 6 12 12 16 14"></polyline>
-                        </svg>
+                <div class="custom-dropdown">
+                    <div class="dropdown-header">
+                        <div class="nav-icon">
+                            <svg class="placeholder-icon" viewBox="0 0 24 24">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <polyline points="12 6 12 12 16 14"></polyline>
+                            </svg>
+                        </div>
+                        <div class="nav-text">Horario</div>
                     </div>
-                    <div class="nav-text">Horario</div>
-                </a>
+                    <div class="dropdown-content">
+                        <div class="dropdown-item" data-value="{% url 'cronometro' %}">Registro</div>
+                        <div class="dropdown-item" data-value="#">Resumen</div>
+                    </div>
+                </div>
             </li>
             <li class="nav-item">
                 <a href="#">
@@ -67,7 +73,6 @@
         </ul>
     </header>
     
-
     <main class="content">
         {% block content %}{% endblock %}
     </main>
@@ -75,5 +80,46 @@
     <footer>
         <div class="copyright">Copyright © 2025</div>
     </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Obtener el dropdown
+            const dropdown = document.querySelector('.custom-dropdown');
+            const dropdownHeader = dropdown.querySelector('.dropdown-header');
+            const dropdownContent = dropdown.querySelector('.dropdown-content');
+            const dropdownItems = dropdown.querySelectorAll('.dropdown-item');
+            
+            // Mostrar/ocultar el dropdown al hacer clic en el header
+            dropdownHeader.addEventListener('click', function(e) {
+                e.preventDefault();
+                dropdownContent.classList.toggle('show');
+            });
+            
+            // Cerrar el dropdown cuando se hace clic fuera de él
+            document.addEventListener('click', function(e) {
+                if (!dropdown.contains(e.target)) {
+                    dropdownContent.classList.remove('show');
+                }
+            });
+            
+            // Manejar la selección de elementos
+            dropdownItems.forEach(item => {
+                item.addEventListener('click', function() {
+                    const value = this.getAttribute('data-value');
+                    // Llamar a la función original
+                    navegarHorario(value);
+                    // Cerrar el dropdown
+                    dropdownContent.classList.remove('show');
+                });
+            });
+            
+            // Función original (mantenida para compatibilidad)
+            function navegarHorario(value) {
+                if (value) {
+                    window.location.href = value;
+                }
+            }
+        });
+    </script>
 </body>
 </html>
