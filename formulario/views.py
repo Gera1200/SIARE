@@ -16,6 +16,7 @@ ROL_ACRONIMOS = {
 }
 
 # Vista para registrar a los empleados
+# Vista para registrar a los empleados
 def register_view(request):
     # Obtener datos para el formulario
     turnos = Turno.objects.filter()[:7]
@@ -28,6 +29,11 @@ def register_view(request):
 
         if empleado_form.is_valid():
             empleado = empleado_form.save(commit=False)
+
+            # Convertir campos a mayúsculas
+            empleado.Nombre_Completo = empleado.Nombre_Completo.upper()
+            empleado.Seudonimo = empleado.Seudonimo.upper()
+            empleado.Id_Unico=empleado.Id_Unico.upper()
 
             # Obtener acrónimo según el rol
             rol_id = empleado_form.cleaned_data['id_rol'].id_rol
@@ -72,10 +78,9 @@ def register_view(request):
                     directivo.save()
 
             # Mensaje de éxito
-            messages.success(request, f"Usuario '{empleado.Id_Combinado}' registrado correctamente.")
+            messages.success(request, f"Usuario '{empleado.Id_Combinado}' registrado correctamente. ¡Recuerda este ID único, ya que lo necesitarás para acceder al sistema!")
             return redirect('login')
         else:
-            # Errores del formulario
             messages.error(request, "Error al registrar el usuario. Verifica los datos ingresados.")
             print(empleado_form.errors)
 
@@ -90,6 +95,7 @@ def register_view(request):
         'empleado_form': empleado_form,
         'directivo_form': directivo_form
     })
+
 
 
 #vista para iniciar sesion

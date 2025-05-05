@@ -2,7 +2,24 @@
 
 {% block content %}
 
-    <h1 class="welcome-title">Bienvenido agente</h1>
-    <h1 class="welcome-title">Nivel de agente</h1>
-    <h1 class="welcome-title">Nombre completo del agente</h1>
+<div class="perfil-container">
+    <h1 class="perfil-titulo">Perfil de Agente</h1>
+    <ul class="perfil-lista">
+        <li><strong>Nivel propuesto:</strong> {{ empleado.id_nivel.descrp_nivel }}</li>
+        <li><strong>Nombre:</strong> {{ empleado.Nombre_Completo }}</li>
+        <li><strong>Seudónimo:</strong> {{ empleado.Seudonimo }}</li>
+        <li><strong>ID único:</strong> {{ empleado.Id_Unico }}</li>
+
+        {% if empleado.turno_especial %}
+            <li><strong>Turno:</strong> {{ empleado.turno_especial.Tipo }}</li>
+            <li><strong>Horario :</strong> {{ empleado.turno_especial.horario_inicio }} - {{ empleado.turno_especial.horario_fin }}</li>
+        {% else %}
+            <li><strong>Turno:</strong> {{ empleado.id_turno.Tipo }}</li>
+            <li><strong>Horario:</strong> {{ empleado.id_turno.horario_inicio }} - {{ empleado.id_turno.horario_fin }}</li>
+        {% endif %}
+
+        <li><strong>Posición fija ATDT:</strong> {{ empleado.Posicion_fija }}</li>
+    </ul>
+</div>
+
 {% endblock %}
