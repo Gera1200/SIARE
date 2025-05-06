@@ -100,36 +100,44 @@ def register_view(request):
 
 #vista para iniciar sesion
 def login_view(request):
+    # Si el usuario YA está autenticado, redirigir según su rol
+    if request.user.is_authenticated:
+        return redirect_based_on_role(request.user.username)
+    
+    # Procesar formulario de login
     if request.method == 'POST':
         username = request.POST.get('username')
         password = request.POST.get('password')
         
-        try:
-            empleado = Empleado.objects.get(Id_Combinado=username)
-
-            if empleado.Contraseña == password:
-                request.session['empleado_id'] = empleado.Id_Unico
-                
-                id_acortado = empleado.Id_Combinado[:2]
-
-                # Redirigir según las iniciales del Id_Combinado
-                if id_acortado == "A-":
-                    return redirect('agente')
-                elif id_acortado == "SO":
-                    return redirect('supervisor')
-                elif id_acortado == "SJ":
-                    return redirect('supervisor_juridico')
-                elif id_acortado == "DI":
-                    return redirect('directivo')
-                elif id_acortado == "PA":
-                    return redirect('admin')
-                else:
-                    return redirect('login')  # Valor no reconocido
-
-            else:
-                messages.error(request, 'Usuario o contraseña incorrectos.')
-        except Empleado.DoesNotExist:
-            messages.error(request, 'Usuario no encontrado.')
+        user = authenticate(request, username=username, password=password)
+        
+        if user is not None:
+            login(request, user)
+            return redirect_based_on_role(username)
+        else:
+            messages.error(request, 'Usuario o contraseña incorrectos.')
     
+    # Mostrar página de login normal
     return render(request, 'login.html')
 
+def redirect_based_on_role(username):
+    """Función auxiliar para redireccionar según el rol"""
+    try:
+        empleado = Empleado.objects.get(Id_Combinado=username)
+        id_acortado = username[:2]
+        
+        if id_acortado == "A-":
+            return redirect('agente')
+        elif id_acortado == "SO":
+            return redirect('supervisor')
+        elif id_acortado == "SJ":
+            return redirect('supervisor_juridico')
+        elif id_acortado == "DI":
+            return redirect('directivo')
+        elif id_acortado == "PA":
+            return redirect('admin')
+    except Empleado.DoesNotExist:
+        pass
+    
+    # Redirigir a login si no se encontró el empleado o el rol no coincide
+    return redirect('login')

@@ -20,14 +20,17 @@ from formulario import views as formulario_views
 from perfil import views as perfil_views
 
 urlpatterns = [
+
     #Vistas para formulario
     path('', formulario_views.login_view, name='inicio'),
-    path('login/', formulario_views.login_view, name='login'),
+    path('accounts/login/', formulario_views.login_view, name='login'),
     path('Registro/', formulario_views.register_view, name="Registro"),
     
     #vistas para agente
     path('agente/',perfil_views.agent, name="agente"),
     path('supervisor/',perfil_views.supervise, name="supervisor"),
     path("cronometro/", perfil_views.agent_timer, name="cronometro"),
+    path("guardar_evento/", perfil_views.guardar_evento, name="guardar_evento"),
     path('logout/',perfil_views.logout_view, name="logout"),
+    
 ]

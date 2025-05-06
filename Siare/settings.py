@@ -17,6 +17,9 @@ from pathlib import Path
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 
+AUTHENTICATION_BACKENDS = ['formulario.auth_backends.EmpleadoBackend']
+
+
 
 
 # Quick-start development settings - unsuitable for production

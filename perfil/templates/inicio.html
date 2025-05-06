@@ -80,7 +80,13 @@
     <footer>
         <div class="copyright">Copyright © 2025</div>
     </footer>
-
+    <script>
+        window.appConfig = {
+            guardarEventoURL: "{% url 'guardar_evento' %}",
+            csrfToken: "{{ csrf_token }}"
+        };
+    </script>
+    <script src="{% static 'js/cronometro.js' %}"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             // Obtener el dropdown

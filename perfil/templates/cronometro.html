@@ -1,5 +1,104 @@
 {% extends "inicio.html" %}
 
+
 {% block content %}
+
+<div class="content">
+    <div class="time-tracker-container">
+        <h1 class="perfil-titulo2">Registra tus tiempos, es tu responsabilidad de hacerlo de manera correcta</h1>
+        <div class="time-table-container">
+            <table class="time-table">
+                <thead>
+                    <tr>
+                        <th></th>
+                        <th>TIEMPO PERMITIDO</th>
+                        <th>INICIO</th>
+                        <th>PAUSA</th>
+                        <th>CRONOMETRO</th>
+                        <th>ESTADO</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>J</td>
+                        <td>JORNADA</td>
+                        <td><button class="btn-inicio">INICIO</button></td>
+                        <td><button class="btn-pausa">PAUSA</button></td>
+                        <td><input type="text" id="J-timer" class="timer-input" value="00:00:00" readonly></td>
+                        <td id="J-status" class="status-message"></td>
+                    </tr>
+                    <tr>
+                        <td>C</td>
+                        <td>COMIDA</td>
+                        <td><button class="btn-inicio">INICIO</button></td>
+                        <td><button class="btn-pausa">PAUSA</button></td>
+                        <td><input type="text" id="C-timer" class="timer-input" value="00:00:00" readonly></td>
+                        <td id="C-status" class="status-message"></td>
+                    </tr>
+                    <tr>
+                        <td>B</td>
+                        <td>BREAK</td>
+                        <td><button class="btn-inicio">INICIO</button></td>
+                        <td><button class="btn-pausa">PAUSA</button></td>
+                        <td><input type="text" id="B-timer" class="timer-input" value="00:00:00" readonly></td>
+                        <td id="B-status" class="status-message"></td>
+                    </tr>
+                    <tr>
+                        <td>C/R</td>
+                        <td>CAP/RETRO</td>
+                        <td><button class="btn-inicio">INICIO</button></td>
+                        <td><button class="btn-pausa">PAUSA</button></td>
+                        <td><input type="text" id="C-R-timer" class="timer-input" value="00:00:00" readonly></td>
+                        <td id="C-R-status" class="status-message"></td>
+                    </tr>
+                    <tr>
+                        <td>P</td>
+                        <td>PAUSA</td>
+                        <td><button class="btn-inicio">INICIO</button></td>
+                        <td><button class="btn-pausa">PAUSA</button></td>
+                        <td><input type="text" id="P-timer" class="timer-input" value="00:00:00" readonly></td>
+                        <td id="P-status" class="status-message"></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        
+        <div class="times-remaining-container">
+            <table class="times-remaining-table">
+                <thead>
+                    <tr>
+                        <th colspan="2">TIEMPOS FALTANTES</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>J</td>
+                        <td><input type="text" id="J-remaining" class="timer-input" value="00:00:00" readonly></td>
+                    </tr>
+                    <tr>
+                        <td>C</td>
+                        <td><input type="text" id="C-remaining" class="timer-input" value="00:00:00" readonly></td>
+                    </tr>
+                    <tr>
+                        <td>B</td>
+                        <td><input type="text" id="B-remaining" class="timer-input" value="00:00:00" readonly></td>
+                    </tr>
+                    <tr>
+                        <td>SUMATORIA</td>
+                        <td><input type="text" id="total-remaining" class="timer-input" value="00:00:00" readonly></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script>
+    window.appConfig = {
+        guardarEventoURL: "{% url 'guardar_evento' %}",
+        csrfToken: "{{ csrf_token }}"
+    };
+</script>
+
 
 {% endblock %}

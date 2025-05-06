@@ -416,3 +416,201 @@
     }
   }
   
+  /* Estilos para el Time Tracker */
+
+.time-tracker-container {
+  width: 100%;
+  max-width: 1000px;
+  margin: 20px auto;
+  background-color: rgba(255, 255, 255, 0.9);
+  border-radius: 15px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  padding: 25px;
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.time-tracker-container:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+}
+
+/* Contenedor de entrada de tiempo */
+.time-input-container {
+  margin-bottom: 20px;
+}
+
+.time-input {
+  width: 100%;
+  padding: 15px;
+  border: 2px solid rgba(243, 209, 230, 0.8);
+  border-radius: 10px;
+  font-size: 16px;
+  background-color: rgba(255, 255, 255, 0.8);
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+}
+
+.time-input:focus {
+  outline: none;
+  border-color: #d4438d;
+  box-shadow: 0 0 8px rgba(212, 67, 141, 0.3);
+}
+
+.time-input::placeholder {
+  color: #999;
+  font-style: italic;
+}
+
+/* Tabla de tiempos */
+.time-table-container {
+  margin-bottom: 25px;
+  overflow-x: auto;
+}
+
+.time-table, .times-remaining-table {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: rgba(255, 255, 255, 0.7);
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.time-table thead tr, .times-remaining-table thead tr {
+  background-color: rgba(243, 209, 230, 0.85);
+  color: #333;
+  text-align: center;
+  font-weight: bold;
+}
+
+.time-table th, .time-table td,
+.times-remaining-table th, .times-remaining-table td {
+  padding: 12px 15px;
+  text-align: center;
+  border: 1px solid rgba(153, 153, 153, 0.2);
+}
+
+.time-table th {
+  font-size: 14px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.time-table tbody tr:hover, .times-remaining-table tbody tr:hover {
+  background-color: rgba(243, 209, 230, 0.2);
+}
+
+/* Botones */
+.btn-inicio, .btn-pausa {
+  padding: 8px 15px;
+  border: none;
+  border-radius: 5px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  min-width: 80px;
+}
+
+.btn-inicio {
+  background-color: #4CAF50;
+  color: white;
+}
+
+.btn-inicio:hover {
+  background-color: #45a049;
+  transform: translateY(-2px);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.btn-pausa {
+  background-color: #f44336;
+  color: white;
+}
+
+.btn-pausa:hover {
+  background-color: #d32f2f;
+  transform: translateY(-2px);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+/* Inputs del cronómetro */
+.timer-input {
+  width: 100%;
+  max-width: 120px;
+  padding: 8px;
+  text-align: center;
+  border: 1px solid rgba(153, 153, 153, 0.3);
+  border-radius: 5px;
+  background-color: rgba(255, 255, 255, 0.8);
+  font-family: monospace;
+  font-size: 16px;
+  font-weight: bold;
+}
+
+/* Tabla de tiempos restantes */
+.times-remaining-container {
+  width: 50%;
+  margin: 0 auto;
+}
+
+.times-remaining-table thead tr th {
+  background-color: rgba(243, 209, 230, 0.95);
+  font-size: 16px;
+  padding: 10px;
+}
+
+.times-remaining-table tbody tr:last-child {
+  background-color: rgba(243, 209, 230, 0.3);
+  font-weight: bold;
+}
+
+/* Estilos responsivos */
+@media (max-width: 768px) {
+  .time-tracker-container {
+    padding: 15px;
+    margin: 10px;
+  }
+  
+  .time-table th, .time-table td,
+  .times-remaining-table th, .times-remaining-table td {
+    padding: 8px 10px;
+    font-size: 14px;
+  }
+  
+  .btn-inicio, .btn-pausa {
+    padding: 6px 10px;
+    min-width: 70px;
+    font-size: 13px;
+  }
+  
+  .timer-input {
+    max-width: 100px;
+    font-size: 14px;
+  }
+  
+  .times-remaining-container {
+    width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .time-table th, .time-table td,
+  .times-remaining-table th, .times-remaining-table td {
+    padding: 6px 8px;
+    font-size: 12px;
+  }
+  
+  .btn-inicio, .btn-pausa {
+    padding: 5px 8px;
+    min-width: 60px;
+    font-size: 12px;
+  }
+  
+  .timer-input {
+    max-width: 80px;
+    font-size: 12px;
+    padding: 5px;
+  }
+}
