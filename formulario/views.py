@@ -16,7 +16,6 @@ ROL_ACRONIMOS = {
 }
 
 # Vista para registrar a los empleados
-# Vista para registrar a los empleados
 def register_view(request):
     # Obtener datos para el formulario
     turnos = Turno.objects.filter()[:7]
@@ -71,11 +70,15 @@ def register_view(request):
             empleado.save()
 
             # Si es directivo, guardar en tabla Directivo
-            if 'contraseña2' in request.POST and empleado.id_rol.id_rol == 4:
+            if empleado.id_rol.id_rol == 4 and request.POST.get('contraseña_acceso'):
                 if directivo_form.is_valid():
                     directivo = directivo_form.save(commit=False)
                     directivo.Id_unico = empleado
                     directivo.save()
+                    print("Directivo guardado correctamente")
+                else:
+                    print("Errores en el formulario Directivo:", directivo_form.errors)
+
 
             # Mensaje de éxito
             messages.success(request, f"Usuario '{empleado.Id_Combinado}' registrado correctamente. ¡Recuerda este ID único, ya que lo necesitarás para acceder al sistema!")

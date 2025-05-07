@@ -5,8 +5,10 @@ from django.shortcuts import render
 from django.contrib.auth import logout
 from django.shortcuts import redirect
 from django.contrib.auth.decorators import login_required
-from formulario.models import Empleado,Actividad, RegistroSistema,SesionTiempo
+from formulario.models import Empleado,Actividad, RegistroSistema,SesionTiempo, Directivo
 from django.utils import timezone
+from datetime import datetime, timedelta
+from django.contrib.auth.hashers import check_password
 
 # Create your views here.
 
@@ -33,19 +35,22 @@ def agent(request):
 
 #Cronometro del agente
 def agent_timer(request):
-    # Select desde la base de datos
+    empleado = Empleado.objects.get(Id_Combinado=request.user.username)
+    turno = empleado.turno_especial or empleado.id_turno
+    hora_inicio_turno = turno.horario_inicio
+   
+    
+    
     actividades = Actividad.objects.all()
     registros = RegistroSistema.objects.all()
-    
-    # Uso de la zona horaria en tiempo
     ahora = timezone.localtime()
 
     return render(request, 'cronometro.html', {
         'actividades': actividades,
         'registros': registros,
-        'ahora': ahora,  # 👈 AÑADIDO AQUÍ
+        'ahora': ahora.strftime('%Y-%m-%dT%H:%M:%S'),
+        'hora_inicio_turno': hora_inicio_turno,
     })
-
 
 
 @login_required(login_url="login")
@@ -92,7 +97,28 @@ def guardar_evento(request):
  
          except Exception as e:
              return JsonResponse({"message": str(e)}, status=500)
- 
+         
+
+
+#validar directivo en cronometro
+def validar_directivo(request):
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body)
+            contraseña = data.get('contraseña')
+
+            # Buscar algún directivo con esa contraseña (debes ajustar esto)
+            for directivo in Directivo.objects.all():
+                if contraseña==directivo.contraseña_acceso:
+                    return JsonResponse({'valido': True})
+
+            return JsonResponse({'valido': False})
+
+        except Exception as e:
+            return JsonResponse({'valido': False, 'error': str(e)})
+
+    return JsonResponse({'valido': False, 'error': 'Método no permitido'})
+    
 
 
 def supervise(request):

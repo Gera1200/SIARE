@@ -38,9 +38,9 @@ class EmpleadoForm(forms.ModelForm):
 class DirectivoForm(forms.ModelForm):
     class Meta:
         model = Directivo
-        fields = ['Id_unico', 'contraseña_acceso']
-
+        fields = ['contraseña_acceso']
         widgets = {
-            'Id_unico': forms.Select(attrs={'class': 'form-control', 'required': True}),
             'contraseña_acceso': forms.PasswordInput(attrs={'class': 'form-control', 'required': True}),
         }
+
+    
