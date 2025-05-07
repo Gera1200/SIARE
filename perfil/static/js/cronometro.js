@@ -1,6 +1,5 @@
 const { guardarEventoURL, csrfToken } = window.appConfig;
 
-
 let timers = {};
 
 function formatTime(seconds) {
@@ -14,7 +13,7 @@ function startTimer(activity) {
     const normalizedActivity = activity.replace('/', '-');
     
     if (timers[normalizedActivity] && timers[normalizedActivity].interval) {
-        return; // Ya está corriendo
+        return;
     }
 
     if (!timers[normalizedActivity]) {
@@ -34,20 +33,26 @@ function stopTimer(activity) {
     if (!timers[normalizedActivity]) return;
 
     clearInterval(timers[normalizedActivity].interval);
+    timers[normalizedActivity].interval = null;  // <--- IMPORTANTE
+
     const timeString = formatTime(timers[normalizedActivity].time);
     document.querySelector(`#${normalizedActivity}-timer`).value = timeString;
     
     registrarEvento(activity, "Pausa", timeString);
 }
 
+
 function registrarEvento(actividad, evento, tiempo) {
+    // Convertir "C/R" a "CR" para coincidir con la BD
+    const actividadBD = actividad === 'C/R' ? 'CR' : actividad;
+    
     const requestData = {
-        inicial: actividad,
+        inicial: actividadBD,
         evento: evento,
         cronometro: tiempo
     };
     
-    console.log("Datos a enviar:", requestData); // Debug crucial
+    console.log("Datos a enviar:", requestData);
     
     fetch(guardarEventoURL, {
         method: "POST",
@@ -63,21 +68,44 @@ function registrarEvento(actividad, evento, tiempo) {
         }
         return response.json();
     })
-    .then(data => console.log("Éxito:", data))
-    .catch(error => console.error("Error detallado:", error)); // Mejor mensaje de error
+    .then(data => {
+        console.log("Éxito:", data);
+        updateStatus(actividad, "Guardado correctamente");
+    })
+    .catch(error => {
+        console.error("Error detallado:", error);
+        updateStatus(actividad, `Error: ${error.message}`);
+    });
 }
 
+function updateStatus(actividad, mensaje) {
+    const normalizedActivity = actividad.replace('/', '-');
+    const statusElement = document.querySelector(`#${normalizedActivity}-status`);
+    if (statusElement) {
+        statusElement.textContent = mensaje;
+        setTimeout(() => {
+            statusElement.textContent = "";
+        }, 3000);
+    }
+}
+
+// Event listeners corregidos
 document.querySelectorAll(".btn-inicio").forEach(btn => {
     btn.addEventListener("click", () => {
-        const actividad = btn.closest("tr").children[0].innerText.trim();
+        const actividad = btn.closest("tr").dataset.inicial;
+        const normalized = actividad.replace('/', '-');
+        const tiempo = timers[normalized] ? formatTime(timers[normalized].time) : "00:00:00";
+        console.log("Iniciando actividad:", actividad);
         startTimer(actividad);
-        registrarEvento(actividad, "Inicio", "00:00:00");
+        registrarEvento(actividad, "Inicio", tiempo);
     });
 });
 
+
 document.querySelectorAll(".btn-pausa").forEach(btn => {
     btn.addEventListener("click", () => {
-        const actividad = btn.closest("tr").children[0].innerText.trim();
+        const actividad = btn.closest("tr").dataset.inicial; // Usar data-inicial
+        console.log("Pausando actividad:", actividad);
         stopTimer(actividad);
     });
 });

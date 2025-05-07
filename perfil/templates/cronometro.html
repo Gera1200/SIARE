@@ -2,6 +2,12 @@
 
 
 {% block content %}
+<div style="position: absolute; top: 20px; left: 20px; font-weight: bold; font-size: 16px;">
+
+    <h1 class="perfil-titulo2">{{ ahora|date:"l d F Y - H:i:s" }}</h1>
+    
+</div>
+
 
 <div class="content">
     <div class="time-tracker-container">
@@ -11,49 +17,56 @@
                 <thead>
                     <tr>
                         <th></th>
+                        <th></th>
                         <th>TIEMPO PERMITIDO</th>
                         <th>INICIO</th>
                         <th>PAUSA</th>
                         <th>CRONOMETRO</th>
                         <th>ESTADO</th>
+                        
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
+                    <tr data-inicial="J">
                         <td>J</td>
                         <td>JORNADA</td>
+                        <td>{{ actividades.3.duracion_actividad|time:"H:i:s" }}</td>
                         <td><button class="btn-inicio">INICIO</button></td>
                         <td><button class="btn-pausa">PAUSA</button></td>
                         <td><input type="text" id="J-timer" class="timer-input" value="00:00:00" readonly></td>
                         <td id="J-status" class="status-message"></td>
                     </tr>
-                    <tr>
+                    <tr data-inicial="C">
                         <td>C</td>
                         <td>COMIDA</td>
+                        <td>{{ actividades.1.duracion_actividad|time:"H:i:s" }}</td>
                         <td><button class="btn-inicio">INICIO</button></td>
                         <td><button class="btn-pausa">PAUSA</button></td>
                         <td><input type="text" id="C-timer" class="timer-input" value="00:00:00" readonly></td>
                         <td id="C-status" class="status-message"></td>
                     </tr>
-                    <tr>
+                    <tr data-inicial="B">
                         <td>B</td>
                         <td>BREAK</td>
+                        <td>{{ actividades.0.duracion_actividad|time:"H:i:s" }}</td>
                         <td><button class="btn-inicio">INICIO</button></td>
                         <td><button class="btn-pausa">PAUSA</button></td>
                         <td><input type="text" id="B-timer" class="timer-input" value="00:00:00" readonly></td>
                         <td id="B-status" class="status-message"></td>
                     </tr>
-                    <tr>
+                    <tr data-inicial="CR">
                         <td>C/R</td>
                         <td>CAP/RETRO</td>
+                        <td>{{ actividades.2.duracion_actividad|time:"H:i:s" }}</td>
                         <td><button class="btn-inicio">INICIO</button></td>
                         <td><button class="btn-pausa">PAUSA</button></td>
-                        <td><input type="text" id="C-R-timer" class="timer-input" value="00:00:00" readonly></td>
-                        <td id="C-R-status" class="status-message"></td>
+                        <td><input type="text" id="CR-timer" class="timer-input" value="00:00:00" readonly></td>
+                        <td id="CR-status" class="status-message"></td>
                     </tr>
-                    <tr>
+                    <tr data-inicial="P">
                         <td>P</td>
                         <td>PAUSA</td>
+                        <td>{{ actividades.4.duracion_actividad|time:"H:i:s" }}</td> 
                         <td><button class="btn-inicio">INICIO</button></td>
                         <td><button class="btn-pausa">PAUSA</button></td>
                         <td><input type="text" id="P-timer" class="timer-input" value="00:00:00" readonly></td>

@@ -6,6 +6,7 @@ from django.contrib.auth import logout
 from django.shortcuts import redirect
 from django.contrib.auth.decorators import login_required
 from formulario.models import Empleado,Actividad, RegistroSistema,SesionTiempo
+from django.utils import timezone
 
 # Create your views here.
 
@@ -32,58 +33,66 @@ def agent(request):
 
 #Cronometro del agente
 def agent_timer(request):
-    actividades=Actividad.objects.all()
+    # Select desde la base de datos
+    actividades = Actividad.objects.all()
+    registros = RegistroSistema.objects.all()
     
-    return render(request,'cronometro.html',{
-         'actividades'  : actividades
+    # Uso de la zona horaria en tiempo
+    ahora = timezone.localtime()
+
+    return render(request, 'cronometro.html', {
+        'actividades': actividades,
+        'registros': registros,
+        'ahora': ahora,  # 👈 AÑADIDO AQUÍ
     })
 
 
 
 @login_required(login_url="login")
 def guardar_evento(request):
-    print("DEBUG Username:", request.user.username)
-
-    if request.method == "POST":
-        data = json.loads(request.body)
-        actividad = data.get("inicial")
-        evento = data.get("evento")
-        cronometro_str = data.get("cronometro")
-        
+     print("DEBUG Username:", request.user.username)
+ 
+     if request.method == "POST":
+         data = json.loads(request.body)
+         actividad = data.get("inicial")
+         evento = data.get("evento")
+         cronometro_str = data.get("cronometro")
          
-        # Convertir el cronómetro (hh:mm:ss) a segundos
-        h, m, s = map(int, cronometro_str.split(":"))
-        cronometro = timedelta(hours=h, minutes=m, seconds=s)
-
-        # Obtener el empleado con Id_Combinado
-        try:
-            empleado = Empleado.objects.get(Id_Combinado=request.user.username)
-            actividad_obj = Actividad.objects.get(inicial=actividad)
-
-            # Crear una nueva sesión de tiempo
-            sesion_tiempo = SesionTiempo(
-                Id_Unico=empleado,
-                inicial=actividad_obj,
-                cronometro=cronometro,
-            )
-            sesion_tiempo.save()
-
-            # Guardar el registro del evento en el sistema
-            registro = RegistroSistema(
-                sesion=sesion_tiempo,
-                evento=evento,
-                ip=request.META.get('REMOTE_ADDR'),
-                mensaje=f"Tiempo {evento} registrado",
-            )
-            registro.save()
-
-            return JsonResponse({"message": "Evento guardado correctamente"})
-
-        except Empleado.DoesNotExist:
-            return JsonResponse({"message": "Empleado no encontrado"}, status=400)
-
-        except Exception as e:
-            return JsonResponse({"message": str(e)}, status=500)
+          
+         # Convertir el cronómetro (hh:mm:ss) a segundos
+         h, m, s = map(int, cronometro_str.split(":"))
+         cronometro = timedelta(hours=h, minutes=m, seconds=s)
+ 
+         # Obtener el empleado con Id_Combinado
+         try:
+             empleado = Empleado.objects.get(Id_Combinado=request.user.username)
+             actividad_obj = Actividad.objects.get(inicial=actividad)
+ 
+             # Crear una nueva sesión de tiempo
+             sesion_tiempo = SesionTiempo(
+                 Id_Unico=empleado,
+                 inicial=actividad_obj,
+                 cronometro=cronometro,
+             )
+             sesion_tiempo.save()
+ 
+             # Guardar el registro del evento en el sistema
+             registro = RegistroSistema(
+                 sesion=sesion_tiempo,
+                 evento=evento,
+                 ip=request.META.get('REMOTE_ADDR'),
+                 mensaje=f"Tiempo {evento} registrado",
+             )
+             registro.save()
+ 
+             return JsonResponse({"message": "Evento guardado correctamente"})
+ 
+         except Empleado.DoesNotExist:
+             return JsonResponse({"message": "Empleado no encontrado"}, status=400)
+ 
+         except Exception as e:
+             return JsonResponse({"message": str(e)}, status=500)
+ 
 
 
 def supervise(request):
