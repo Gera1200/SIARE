@@ -1,4 +1,7 @@
 from datetime import timedelta
+from django.utils import timezone
+from django.utils.timezone import localtime
+
 from django.db import models
 
 # Definición del modelo Turno
@@ -86,9 +89,9 @@ class Directivo(models.Model):
 class SesionTiempo(models.Model):
     Id_Unico = models.ForeignKey(Empleado, on_delete=models.CASCADE, db_column="Id_Unico")
     inicial = models.ForeignKey(Actividad, on_delete=models.CASCADE,db_column="inicial")
-    fecha = models.DateField(auto_now_add=True)
+    fecha = models.DateField(default=timezone.now)
     cronometro = models.DurationField(default=timedelta)  # Tiempo acumulado
-    excedido = models.BooleanField(default=False)
+    excedido = models.IntegerField(null=True, blank=True)
     
     
     class Meta:
@@ -102,7 +105,7 @@ class SesionTiempo(models.Model):
 class RegistroSistema(models.Model):
     sesion = models.ForeignKey(SesionTiempo, on_delete=models.CASCADE, related_name="registros")
     evento = models.CharField(max_length=50)  # "Inició", "Pausó", "Tiempo excedido", etc.
-    marca_tiempo = models.DateTimeField(auto_now_add=True)
+    marca_tiempo = models.DateTimeField(default=timezone.localtime)
     ip = models.GenericIPAddressField(null=True, blank=True)
     mensaje = models.TextField(blank=True)  # texto adicional como "Tiempo excedido..."
 
@@ -111,4 +114,5 @@ class RegistroSistema(models.Model):
         managed = True
         
     def __str__(self):
-        return f"{self.evento} - {self.marca_tiempo.strftime('%H:%M:%S')}"
+        # Modificar para mostrar la hora completa con formato de 24 horas
+        return f"{self.evento} - {timezone.localtime(self.marca_tiempo).strftime('%Y-%m-%d %H:%M:%S')}"

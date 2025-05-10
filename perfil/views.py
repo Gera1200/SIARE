@@ -9,6 +9,7 @@ from formulario.models import Empleado,Actividad, RegistroSistema,SesionTiempo, 
 from django.utils import timezone
 from datetime import datetime, timedelta
 from django.contrib.auth.hashers import check_password
+from django.utils.timezone import localtime
 
 # Create your views here.
 
@@ -42,6 +43,13 @@ def agent_timer(request):
     
     
     actividades = Actividad.objects.all()
+    
+    
+    duraciones = []  # Lista para almacenar todas las duraciones
+    for actividad in actividades:
+        duraciones.append(actividad.duracion_actividad)
+        
+        
     registros = RegistroSistema.objects.all()
     ahora = timezone.localtime()
 
@@ -50,53 +58,87 @@ def agent_timer(request):
         'registros': registros,
         'ahora': ahora.strftime('%Y-%m-%dT%H:%M:%S'),
         'hora_inicio_turno': hora_inicio_turno,
+        'duracion_actividad': duraciones,
     })
 
 
 @login_required(login_url="login")
 def guardar_evento(request):
-     print("DEBUG Username:", request.user.username)
- 
-     if request.method == "POST":
-         data = json.loads(request.body)
-         actividad = data.get("inicial")
-         evento = data.get("evento")
-         cronometro_str = data.get("cronometro")
-         
-          
-         # Convertir el cronómetro (hh:mm:ss) a segundos
-         h, m, s = map(int, cronometro_str.split(":"))
-         cronometro = timedelta(hours=h, minutes=m, seconds=s)
- 
-         # Obtener el empleado con Id_Combinado
-         try:
-             empleado = Empleado.objects.get(Id_Combinado=request.user.username)
-             actividad_obj = Actividad.objects.get(inicial=actividad)
- 
-             # Crear una nueva sesión de tiempo
-             sesion_tiempo = SesionTiempo(
-                 Id_Unico=empleado,
-                 inicial=actividad_obj,
-                 cronometro=cronometro,
-             )
-             sesion_tiempo.save()
- 
-             # Guardar el registro del evento en el sistema
-             registro = RegistroSistema(
-                 sesion=sesion_tiempo,
-                 evento=evento,
-                 ip=request.META.get('REMOTE_ADDR'),
-                 mensaje=f"Tiempo {evento} registrado",
-             )
-             registro.save()
- 
-             return JsonResponse({"message": "Evento guardado correctamente"})
- 
-         except Empleado.DoesNotExist:
-             return JsonResponse({"message": "Empleado no encontrado"}, status=400)
- 
-         except Exception as e:
-             return JsonResponse({"message": str(e)}, status=500)
+    print("DEBUG Username:", request.user.username)
+
+    if request.method == "POST":
+        data = json.loads(request.body)
+        actividad = data.get("inicial")
+        evento = data.get("evento")
+        cronometro_str = data.get("cronometro")
+        hora_cliente = data.get("hora_cliente", "No proporcionada")
+        retraso=data.get("tiempo_segundos")
+        
+        # Obtener la hora actual del servidor
+        hora_actual = timezone.localtime()
+        print(f"DEBUG Hora del servidor: {hora_actual}")
+        print(f"DEBUG Hora del cliente: {hora_cliente}")
+        
+        # Convertir el cronómetro (hh:mm:ss) a segundos
+        h, m, s = map(int, cronometro_str.split(":"))
+        cronometro = timedelta(hours=h, minutes=m, seconds=s)
+
+        # Obtener el empleado con Id_Combinado
+        try:
+            empleado = Empleado.objects.get(Id_Combinado=request.user.username)
+            actividad_obj = Actividad.objects.get(inicial=actividad)
+
+            # Crear una nueva sesión de tiempo con la fecha actual explícita
+            sesion_tiempo = SesionTiempo(
+                Id_Unico=empleado,
+                inicial=actividad_obj,
+                cronometro=cronometro,
+                fecha=hora_actual.date(),  # Establecer explícitamente la fecha actual
+                
+            )
+            
+            # Si es un evento de retraso, marcar como excedido
+            if evento == "retraso":
+                sesion_tiempo.excedido = ((retraso/60)-5)
+                
+            sesion_tiempo.save()
+
+            # Mensaje personalizado según el tipo de evento
+            mensaje = f"Tiempo {evento} registrado"
+            if evento == "retraso":
+                # Convertir el tiempo a minutos para el mensaje
+                minutos_retraso = int((cronometro.total_seconds() / 60) + 0.5)  # Redondear
+                mensaje = f"Retraso de {minutos_retraso} minutos registrado"
+
+            # Guardar el registro del evento en el sistema con la marca de tiempo actual explícita
+            registro = RegistroSistema(
+                sesion=sesion_tiempo,
+                evento=evento,
+                ip=request.META.get('REMOTE_ADDR'),
+                mensaje=mensaje,
+                marca_tiempo=hora_actual,  # Establecer explícitamente la marca de tiempo actual
+                
+            )
+            registro.save()
+
+            # Verificar que la hora se guardó correctamente
+            registro_guardado = RegistroSistema.objects.get(id=registro.id)
+            hora_guardada = timezone.localtime(registro_guardado.marca_tiempo)
+            print(f"DEBUG Hora guardada en BD: {hora_guardada}")
+
+            # Incluir la hora actual en la respuesta para verificación
+            return JsonResponse({
+                "message": "Evento guardado correctamente",
+                "hora_guardada": hora_actual.strftime("%Y-%m-%d %H:%M:%S"),
+                "hora_cliente": hora_cliente,
+                "tipo_evento": evento
+            })
+
+        except Empleado.DoesNotExist:
+            return JsonResponse({"message": "Empleado no encontrado"}, status=400)
+
+        except Exception as e:
+            return JsonResponse({"message": str(e)}, status=500)
          
 
 

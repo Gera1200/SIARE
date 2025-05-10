@@ -26,13 +26,15 @@
                         <td>J</td>
                         <td>JORNADA</td>
                         <td>{{ actividades.3.duracion_actividad|time:"H:i:s" }}</td>
-                        <td>
+                        <td style="position: relative;">
                             <button class="btn-inicio">INICIO</button>
+                            
                             <div class="auth-container" style="display:none;">
                                 <input type="password" class="pass-director" placeholder="Contraseña Directivo">
                                 <button class="btn-validar">Validar</button>
-                                <span class="msg-error" style="color:red;"></span>
+                                <span class="msg-error"></span>
                             </div>
+                            
                         </td>
                         <td><button class="btn-pausa">PAUSA</button></td>
                         <td><input type="text" id="J-timer" class="timer-input" value="00:00:00" readonly></td>
@@ -122,10 +124,17 @@
     };
 
     window.initialDatetimeStr = "{{ ahora|escapejs }}";
+    
+</script>
+<script id="duraciones-data" type="application/json">
+    {{ duracion_actividad|json_script:"duraciones-data" }}
 </script>
 
-<!-- Carga de scripts dependientes -->
+
+<!-- Carga de estilos y scripts -->
+
 <script src="{% static 'js/cronometro.js' %}"></script>
-<script src="{% static 'js/horas.js' %}"></script>
+<script src="{% static 'js/update-clock.js' %}"></script>
+
 
 {% endblock %}
