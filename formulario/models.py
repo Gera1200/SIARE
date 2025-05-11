@@ -116,3 +116,19 @@ class RegistroSistema(models.Model):
     def __str__(self):
         # Modificar para mostrar la hora completa con formato de 24 horas
         return f"{self.evento} - {timezone.localtime(self.marca_tiempo).strftime('%Y-%m-%d %H:%M:%S')}"
+    
+    
+class EstadoCronometro(models.Model):
+    empleado_id = models.CharField(max_length=100)
+    fecha = models.DateField()
+    datos = models.TextField()  # JSON con todos los datos del estado
+    ultima_actualizacion = models.DateTimeField(auto_now=True)
+    
+    class Meta:
+        db_table = "ESTADO_CRONOMETRO"
+        managed = True
+        unique_together = ('empleado_id', 'fecha')
+        
+    def __str__(self):
+        return f"{self.empleado_id} - {self.fecha}"
+

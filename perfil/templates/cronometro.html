@@ -8,6 +8,9 @@
 <div class="content">
     <div class="time-tracker-container">
         <h1 class="perfil-titulo2">Registra tus tiempos, es tu responsabilidad de hacerlo de manera correcta</h1>
+        <div class="employee-info">
+            
+        </div>
         <div class="time-table-container">
             <table class="time-table">
                 <thead>
@@ -44,10 +47,18 @@
                         <td>C</td>
                         <td>COMIDA</td>
                         <td>{{ actividades.1.duracion_actividad|time:"H:i:s" }}</td>
-                        <td><button class="btn-inicio">INICIO</button></td>
+                        <td style="position: relative;">
+                            <button class="btn-inicio">INICIO</button>
+                            
+                            <div class="auth-container" style="display:none;">
+                                <input type="password" class="pass-director" placeholder="Contraseña Directivo">
+                                <button class="btn-validar">Validar</button>
+                                <span class="msg-error"></span>
+                            </div>
+                        </td>
                         <td><button class="btn-pausa">PAUSA</button></td>
                         <td><input type="text" id="C-timer" class="timer-input" value="00:00:00" readonly></td>
-                        <td id="C-status" class="status-message"></td>
+                        <td id="C-status" class="status-message">Espere a iniciar jornada</td>
                     </tr>
                     <tr data-inicial="B">
                         <td>B</td>
@@ -56,7 +67,7 @@
                         <td><button class="btn-inicio">INICIO</button></td>
                         <td><button class="btn-pausa">PAUSA</button></td>
                         <td><input type="text" id="B-timer" class="timer-input" value="00:00:00" readonly></td>
-                        <td id="B-status" class="status-message"></td>
+                        <td id="B-status" class="status-message">Espere a iniciar jornada</td>
                     </tr>
                     <tr data-inicial="CR">
                         <td>C/R</td>
@@ -65,7 +76,7 @@
                         <td><button class="btn-inicio">INICIO</button></td>
                         <td><button class="btn-pausa">PAUSA</button></td>
                         <td><input type="text" id="CR-timer" class="timer-input" value="00:00:00" readonly></td>
-                        <td id="CR-status" class="status-message"></td>
+                        <td id="CR-status" class="status-message">Espere a iniciar jornada</td>
                     </tr>
                     <tr data-inicial="P">
                         <td>P</td>
@@ -74,7 +85,7 @@
                         <td><button class="btn-inicio">INICIO</button></td>
                         <td><button class="btn-pausa">PAUSA</button></td>
                         <td><input type="text" id="P-timer" class="timer-input" value="00:00:00" readonly></td>
-                        <td id="P-status" class="status-message"></td>
+                        <td id="P-status" class="status-message">Espere a iniciar jornada</td>
                     </tr>
                 </tbody>
             </table>
@@ -84,7 +95,7 @@
             <table class="times-remaining-table">
                 <thead>
                     <tr>
-                        <th colspan="2">TIEMPOS FALTANTES</th>
+                        <th colspan="2">TIEMPOS EXCEDIDOS</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -115,26 +126,36 @@
 <!-- Configuración de variables globales -->
 <script>
     window.configHoras = {
-        horaInicioPermitida: "{{ hora_inicio_turno }}"
+        horaInicioPermitida: "{{ hora_inicio_turno|escapejs }}"
     };
+
+    //verficacion para no reiniciar contador de retraso
+    window.estadoRetrasoRegistrado = {{ excedido|yesno:"true,false" }};
+    window.estadoRetrasoRegistrado = {{ estadoRetrasoRegistrado|yesno:"true,false" }};
+    window.evitarRetraso = {{ evitarRetraso|yesno:"true,false" }};
 
     window.appConfig = {
         guardarEventoURL: "{% url 'guardar_evento' %}",
-        csrfToken: "{{ csrf_token }}"
+        guardarEstadoURL: "{% url 'guardar_estado_cronometro' %}",
+        cargarEstadoURL: "{% url 'cargar_estado_cronometro' %}",
+        csrfToken: "{{ csrf_token }}",
+        empleadoId: "{{ empleado.Id_Unico|escapejs }}"
     };
 
+    // Establecer variables globales derivadas
     window.initialDatetimeStr = "{{ ahora|escapejs }}";
-    
-</script>
-<script id="duraciones-data" type="application/json">
-    {{ duracion_actividad|json_script:"duraciones-data" }}
+    window.empleadoActual = window.appConfig.empleadoId;
 </script>
 
 
-<!-- Carga de estilos y scripts -->
+
+<!-- Cargar los scripts en el orden correcto -->
+<script src="{% static 'js/api.js' %}"></script>
+<script src="{% static 'js/config.js' %}"></script>
+<script src="{% static 'js/horario.js' %}"></script>
+<script src="{% static 'js/retraso.js' %}"></script>
 
 <script src="{% static 'js/cronometro.js' %}"></script>
 <script src="{% static 'js/update-clock.js' %}"></script>
-
 
 {% endblock %}

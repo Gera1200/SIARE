@@ -5,7 +5,7 @@ from django.shortcuts import render
 from django.contrib.auth import logout
 from django.shortcuts import redirect
 from django.contrib.auth.decorators import login_required
-from formulario.models import Empleado,Actividad, RegistroSistema,SesionTiempo, Directivo
+from formulario.models import Empleado,Actividad, RegistroSistema,SesionTiempo, Directivo, EstadoCronometro
 from django.utils import timezone
 from datetime import datetime, timedelta
 from django.contrib.auth.hashers import check_password
@@ -34,33 +34,48 @@ def agent(request):
         return redirect('login')
 
 
-#Cronometro del agente
+# Cronómetro del agente
 def agent_timer(request):
     empleado = Empleado.objects.get(Id_Combinado=request.user.username)
     turno = empleado.turno_especial or empleado.id_turno
     hora_inicio_turno = turno.horario_inicio
-   
-    
-    
+
     actividades = Actividad.objects.all()
-    
-    
-    duraciones = []  # Lista para almacenar todas las duraciones
-    for actividad in actividades:
-        duraciones.append(actividad.duracion_actividad)
-        
-        
-    registros = RegistroSistema.objects.all()
+    duraciones = [actividad.duracion_actividad for actividad in actividades]
+
+    # Obtener sesión activa del día
+    hoy = timezone.localdate()
+    sesion = SesionTiempo.objects.filter(Id_Unico=empleado.Id_Unico, fecha=hoy).last()
+
+    # Comprobar si hay evento de retraso
+    retraso_registrado = False
+    evitar_retraso = False
+    if sesion:
+        retraso_registrado = RegistroSistema.objects.filter(sesion=sesion, evento="retraso").exists()
+        evento_inicio = RegistroSistema.objects.filter(sesion=sesion, evento="inicio").first()
+
+        if evento_inicio and not retraso_registrado:
+            # Hora planificada con tolerancia de 5 minutos
+            hora_inicio_real = timezone.localtime(evento_inicio.marca_tiempo)
+            hora_turno_completa = timezone.make_aware(
+                datetime.combine(hoy, hora_inicio_turno), timezone.get_current_timezone()
+            )
+            if hora_inicio_real <= hora_turno_completa + timedelta(minutes=5):
+                evitar_retraso = True
+
     ahora = timezone.localtime()
 
     return render(request, 'cronometro.html', {
+        'empleado': empleado,
         'actividades': actividades,
-        'registros': registros,
+        'registros': RegistroSistema.objects.all(),
         'ahora': ahora.strftime('%Y-%m-%dT%H:%M:%S'),
         'hora_inicio_turno': hora_inicio_turno,
         'duracion_actividad': duraciones,
+        'excedido': SesionTiempo.objects.filter(Id_Unico=empleado.Id_Unico, excedido=True).last(),
+        'estadoRetrasoRegistrado': retraso_registrado,
+        'evitarRetraso': evitar_retraso,
     })
-
 
 @login_required(login_url="login")
 def guardar_evento(request):
@@ -160,6 +175,89 @@ def validar_directivo(request):
             return JsonResponse({'valido': False, 'error': str(e)})
 
     return JsonResponse({'valido': False, 'error': 'Método no permitido'})
+
+
+
+@login_required(login_url="login")
+def guardar_estado_cronometro(request):
+    if request.method == "POST":
+        try:
+            data = json.loads(request.body)
+            empleado_id = data.get("empleado_id")
+            print(f"Empleado ID recibido: {empleado_id}")
+            fecha = data.get("fecha")
+
+            # Convertir la fecha a objeto datetime
+            fecha_obj = datetime.strptime(fecha, "%Y-%m-%d").date()
+
+            # Buscar o crear estado por empleado y fecha
+            estado, created = EstadoCronometro.objects.update_or_create(
+                empleado_id =empleado_id,  # CORREGIDO
+                fecha=fecha_obj,
+                defaults={
+                    'datos': json.dumps(data)
+                }
+            )
+
+            return JsonResponse({
+                "success": True,
+                "message": "Estado guardado correctamente",
+                "created": created
+            })
+
+        except Exception as e:
+            print(f"Error al guardar estado: {e}")
+            return JsonResponse({
+                "success": False,
+                "message": str(e)
+            }, status=500)
+
+    return JsonResponse({
+        "success": False,
+        "message": "Método no permitido"
+    }, status=405)
+
+@login_required(login_url="login")
+def cargar_estado_cronometro(request):
+    if request.method == "GET":
+        try:
+            empleado_id = request.GET.get("empleado_id")
+            fecha = request.GET.get("fecha")
+
+            # Convertir la fecha a objeto datetime
+            fecha_obj = datetime.strptime(fecha, "%Y-%m-%d").date()
+
+            try:
+                estado = EstadoCronometro.objects.get(
+                    empleado_id =empleado_id,  # CORREGIDO
+                    fecha=fecha_obj
+                )
+
+                # Cargar los datos JSON
+                datos = json.loads(estado.datos)
+
+                return JsonResponse({
+                    "success": True,
+                    "estado": datos
+                })
+
+            except EstadoCronometro.DoesNotExist:
+                return JsonResponse({
+                    "success": False,
+                    "message": "No se encontró estado para este empleado y fecha"
+                })
+
+        except Exception as e:
+            return JsonResponse({
+                "success": False,
+                "message": str(e)
+            }, status=500)
+
+    return JsonResponse({
+        "success": False,
+        "message": "Método no permitido"
+    }, status=405)
+
     
 
 

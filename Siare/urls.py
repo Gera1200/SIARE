@@ -32,8 +32,8 @@ urlpatterns = [
     path("cronometro/", perfil_views.agent_timer, name="cronometro"),
     path("guardar_evento/", perfil_views.guardar_evento, name="guardar_evento"),
     path('logout/',perfil_views.logout_view, name="logout"),
-    
-    #vista validacion de contraseña agente/cronometro
+    path('guardar_estado_cronometro/', perfil_views.guardar_estado_cronometro, name='guardar_estado_cronometro'),
+    path('cargar_estado_cronometro/', perfil_views.cargar_estado_cronometro, name='cargar_estado_cronometro'),
     path('validar_directivo/', perfil_views.validar_directivo, name="validar_directivo")
     
 ]
