@@ -1,7 +1,8 @@
 {% extends "inicio.html" %}
 
 {% block content %}
-<div id="live-clock" style="position: absolute; top: 20px; left: 20px; font-size: 2em; font-weight: bold;">
+<!-- Corregir el reloj para que tenga una estructura adecuada -->
+<div id="live-clock">
     Cargando hora...
 </div>
 
@@ -9,14 +10,14 @@
     <div class="time-tracker-container">
         <h1 class="perfil-titulo2">Registra tus tiempos, es tu responsabilidad de hacerlo de manera correcta</h1>
         <div class="employee-info">
-            
+            <!-- Información del empleado -->
         </div>
         <div class="time-table-container">
             <table class="time-table">
                 <thead>
                     <tr>
-                        <th></th>
-                        <th></th>
+                        <th>CÓDIGO</th>
+                        <th>ACTIVIDAD</th>
                         <th>TIEMPO PERMITIDO</th>
                         <th>INICIO</th>
                         <th>PAUSA</th>
@@ -142,20 +143,21 @@
         empleadoId: "{{ empleado.Id_Unico|escapejs }}"
     };
 
+    // Añadir la URL de logout como una variable global
+    window.logoutURL = "{% url 'logout' %}";
+
     // Establecer variables globales derivadas
     window.initialDatetimeStr = "{{ ahora|escapejs }}";
     window.empleadoActual = window.appConfig.empleadoId;
 </script>
-
-
 
 <!-- Cargar los scripts en el orden correcto -->
 <script src="{% static 'js/api.js' %}"></script>
 <script src="{% static 'js/config.js' %}"></script>
 <script src="{% static 'js/horario.js' %}"></script>
 <script src="{% static 'js/retraso.js' %}"></script>
-
 <script src="{% static 'js/cronometro.js' %}"></script>
 <script src="{% static 'js/update-clock.js' %}"></script>
+<script src="{% static 'js/background-tracking.js' %}"></script>
 
 {% endblock %}
